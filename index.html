@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Per Alessia 🌊</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#0a2740;
+    --navy-mid:#123a55;
+    --sea-teal:#1f7080;
+    --sea-light:#4fa8ac;
+    --foam:#eef6f3;
+    --sand:#f2e3c4;
+    --coral:#e88a68;
+    --pink-house:#f0a8a0;
+    --yellow-house:#f2c96a;
+    --blue-house:#5f8fb0;
+    --glass:rgba(255,255,255,0.14);
+    --glass-border:rgba(255,255,255,0.35);
+    --ink:#0a2740;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{
+    height:100%;
+    background:var(--navy-deep);
+    color:var(--foam);
+    font-family:'Jost',sans-serif;
+    overflow-x:hidden;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .scene{
+    position:fixed;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:8vh 6vw;
+    opacity:0;
+    visibility:hidden;
+    transition:opacity 1.4s ease;
+    z-index:1;
+  }
+  .scene.active{opacity:1;visibility:visible;z-index:2;}
+
+  .display{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:500;
+    line-height:1.15;
+  }
+
+  /* ---------- SCENE 0: black + title ---------- */
+  #scene-black{background:#000;}
+  .fade-line{
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity 1.6s ease, transform 1.6s ease;
+  }
+  .fade-line.show{opacity:1;transform:translateY(0);}
+  #title-main{
+    font-size:clamp(1.6rem, 6vw, 2.6rem);
+    color:var(--pink-house);
+    margin-bottom:1.4rem;
+    letter-spacing:0.02em;
+  }
+  #title-sub{
+    font-size:clamp(1.1rem, 4vw, 1.5rem);
+    font-style:italic;
+    color:var(--sand);
+    margin-bottom:0.8rem;
+  }
+  #title-line{
+    font-size:clamp(1rem, 3.6vw, 1.3rem);
+    max-width:32ch;
+    color:var(--foam);
+    font-weight:300;
+  }
+
+  /* ---------- SCENE 1: Procida illustration ---------- */
+  #scene-procida{
+    background:linear-gradient(180deg, #cfe9e6 0%, #a9d6d2 22%, var(--sea-teal) 55%, var(--navy-mid) 100%);
+  }
+  .procida-illustration{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+  }
+  .scene-overlay-text{
+    position:relative;
+    z-index:3;
+    max-width:34ch;
+  }
+  #scene-procida .display{
+    font-size:clamp(1.7rem, 6.4vw, 2.8rem);
+    color:#fff;
+    text-shadow:0 2px 18px rgba(10,39,64,0.55);
+  }
+  #procida-sub{
+    margin-top:1.2rem;
+    font-size:clamp(1rem, 3.6vw, 1.3rem);
+    font-style:italic;
+    color:var(--sand);
+    text-shadow:0 2px 12px rgba(10,39,64,0.5);
+  }
+  .dim-veil{
+    position:absolute;inset:0;
+    background:rgba(8,30,48,0.28);
+    z-index:2;
+  }
+
+  /* ---------- SCENE 2: closed eyes sequence ---------- */
+  #scene-close{
+    background:radial-gradient(ellipse at 50% 20%, var(--navy-mid) 0%, var(--navy-deep) 70%);
+  }
+  .close-lines{
+    display:flex;
+    flex-direction:column;
+    gap:1.4rem;
+    align-items:center;
+  }
+  .close-line{
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:clamp(1.3rem, 5.6vw, 2.1rem);
+    color:var(--foam);
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity 1.1s ease, transform 1.1s ease;
+  }
+  .close-line.show{opacity:1;transform:translateY(0);}
+  .close-dot{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--sea-light);
+    opacity:0.6;
+  }
+
+  /* ---------- SCENE 3: reveal ---------- */
+  #scene-reveal{
+    background:linear-gradient(180deg, var(--navy-deep) 0%, var(--navy-mid) 60%, var(--sea-teal) 130%);
+  }
+  #reveal-wave{font-size:2rem;margin-bottom:0.4rem;}
+  #reveal-title{
+    font-size:clamp(2.4rem, 11vw, 4.2rem);
+    color:var(--sand);
+    letter-spacing:0.03em;
+    text-shadow:0 4px 26px rgba(0,0,0,0.35);
+  }
+  #reveal-date{
+    margin-top:0.6rem;
+    font-family:'Jost',sans-serif;
+    font-weight:400;
+    letter-spacing:0.16em;
+    font-size:clamp(0.95rem, 3.4vw, 1.2rem);
+    color:var(--foam);
+    text-transform:uppercase;
+  }
+  .btn-elegant{
+    margin-top:3rem;
+    padding:0.95rem 2.6rem;
+    border-radius:999px;
+    border:1px solid var(--glass-border);
+    background:var(--glass);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    color:var(--foam);
+    font-family:'Jost',sans-serif;
+    font-size:1rem;
+    letter-spacing:0.06em;
+    cursor:pointer;
+    transition:transform 0.35s ease, background 0.35s ease, box-shadow 0.35s ease;
+    box-shadow:0 8px 24px rgba(0,0,0,0.25);
+  }
+  .btn-elegant:hover{
+    transform:translateY(-3px);
+    background:rgba(255,255,255,0.22);
+    box-shadow:0 12px 30px rgba(0,0,0,0.32);
+  }
+  .btn-elegant:active{transform:translateY(-1px) scale(0.98);}
+
+  /* ---------- SCENE 4: boarding passes ---------- */
+  #scene-tickets{
+    background:#0a2740;
+    justify-content:flex-start;
+    padding-top:9vh;
+    padding-bottom:6vh;
+    overflow-y:auto;
+  }
+  .corricella-bg{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    filter:blur(6px) saturate(1.1);
+    transform:scale(1.08);
+  }
+  #scene-tickets .veil{
+    position:fixed;inset:0;z-index:0;
+    background:linear-gradient(180deg, rgba(9,35,55,0.55) 0%, rgba(9,35,55,0.75) 100%);
+  }
+  .tickets-head{
+    position:relative;z-index:2;
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(1.4rem, 5.6vw, 1.9rem);
+    color:var(--sand);
+    margin-bottom:2.2rem;
+    letter-spacing:0.02em;
+  }
+  .tickets-wrap{
+    position:relative;z-index:2;
+    display:flex;
+    flex-direction:column;
+    gap:1.6rem;
+    width:100%;
+    max-width:420px;
+  }
+  .boarding-pass{
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border-radius:18px;
+    padding:1.4rem 1.5rem 1.2rem;
+    text-align:left;
+    box-shadow:0 14px 40px rgba(0,0,0,0.35);
+    opacity:0;
+    transform:translateY(40px);
+    transition:opacity 0.9s ease, transform 0.9s ease;
+    position:relative;
+    overflow:hidden;
+  }
+  .boarding-pass.show{opacity:1;transform:translateY(0);}
+  .boarding-pass::after{
+    content:"";
+    position:absolute;
+    right:-10px;top:50%;
+    width:20px;height:20px;
+    background:var(--navy-deep);
+    border-radius:50%;
+    transform:translateY(-50%);
+  }
+  .boarding-pass::before{
+    content:"";
+    position:absolute;
+    left:-10px;top:50%;
+    width:20px;height:20px;
+    background:var(--navy-deep);
+    border-radius:50%;
+    transform:translateY(-50%);
+  }
+  .bp-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-bottom:0.8rem;
+    margin-bottom:0.8rem;
+    border-bottom:1px dashed rgba(255,255,255,0.4);
+  }
+  .bp-label{
+    font-size:0.65rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--sea-light);
+    font-family:'Space Mono',monospace;
+  }
+  .bp-icon{font-size:1.3rem;}
+  .bp-title{
+    font-family:'Space Mono',monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    color:rgba(238,246,243,0.6);
+    text-transform:uppercase;
+  }
+  .bp-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0.9rem 1rem;
+    margin-top:0.6rem;
+  }
+  .bp-field .bp-label{margin-bottom:0.25rem;display:block;}
+  .bp-value{
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.15rem;
+    color:var(--foam);
+  }
+  .bp-value.mono{
+    font-family:'Space Mono',monospace;
+    font-size:1rem;
+    letter-spacing:0.03em;
+  }
+  .bp-full{grid-column:1 / -1;}
+
+  /* waves divider */
+  .wave-divider{
+    position:absolute;bottom:0;left:0;width:100%;
+    line-height:0;
+    z-index:2;
+  }
+
+  /* audio toggle */
+  #sound-toggle{
+    position:fixed;
+    top:18px;right:18px;
+    z-index:50;
+    width:44px;height:44px;
+    border-radius:50%;
+    border:1px solid var(--glass-border);
+    background:var(--glass);
+    backdrop-filter:blur(8px);
+    color:var(--foam);
+    font-size:1.1rem;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+  }
+
+  @media (min-width:640px){
+    .tickets-wrap{max-width:460px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important; animation:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<button id="sound-toggle" aria-label="Attiva/disattiva suono">🔇</button>
+
+<!-- SCENE 0 : black opening -->
+<section class="scene active" id="scene-black">
+  <div id="title-main" class="display fade-line">Per la Mia Santa Principessina Alessia ❤️</div>
+  <div id="title-sub" class="display fade-line">Per il tuo onomastico...</div>
+  <div id="title-line" class="fade-line">I regali più belli non sono quelli che si scartano.</div>
+</section>
+
+<!-- SCENE 1 : Procida illustration -->
+<section class="scene" id="scene-procida">
+  <svg class="procida-illustration" viewBox="0 0 800 500" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+    <rect x="0" y="0" width="800" height="500" fill="url(#skyGrad)"/>
+    <defs>
+      <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#cfe9e6"/>
+        <stop offset="45%" stop-color="#8fc9c4"/>
+        <stop offset="100%" stop-color="#1f7080"/>
+      </linearGradient>
+    </defs>
+    <!-- distant sea -->
+    <rect x="0" y="300" width="800" height="200" fill="#2c8896" opacity="0.85"/>
+    <!-- houses row (Procida vibe) -->
+    <g opacity="0.95">
+      <rect x="30" y="230" width="70" height="90" fill="#f0a8a0"/>
+      <rect x="100" y="250" width="55" height="70" fill="#f2c96a"/>
+      <rect x="155" y="220" width="65" height="100" fill="#5f8fb0"/>
+      <rect x="220" y="245" width="60" height="75" fill="#eef6f3"/>
+      <rect x="280" y="215" width="70" height="105" fill="#e88a68"/>
+      <rect x="350" y="240" width="58" height="80" fill="#f2c96a"/>
+      <rect x="408" y="225" width="66" height="95" fill="#f0a8a0"/>
+      <rect x="474" y="255" width="52" height="65" fill="#5f8fb0"/>
+      <rect x="526" y="230" width="70" height="90" fill="#eef6f3"/>
+      <rect x="596" y="248" width="60" height="72" fill="#e88a68"/>
+      <rect x="656" y="222" width="66" height="98" fill="#f2c96a"/>
+      <rect x="722" y="240" width="58" height="80" fill="#f0a8a0"/>
+    </g>
+    <!-- little boats -->
+    <g fill="#0a2740" opacity="0.55">
+      <ellipse cx="180" cy="360" rx="26" ry="6"/>
+      <ellipse cx="520" cy="380" rx="20" ry="5"/>
+      <ellipse cx="650" cy="350" rx="18" ry="4.5"/>
+    </g>
+  </svg>
+  <div class="dim-veil"></div>
+  <div class="scene-overlay-text">
+    <div class="display fade-line" id="procida-line1">Sono quelli che diventano ricordi.</div>
+    <div id="procida-sub" class="fade-line" id="procida-line2">Per questo...</div>
+    <div id="procida-line3" class="display fade-line" style="font-size:clamp(1.1rem,4vw,1.5rem);color:#fff;margin-top:0.6rem;">Ho deciso di regalarti una giornata tutta per noi.</div>
+  </div>
+</section>
+
+<!-- SCENE 2 : closed eyes imagining -->
+<section class="scene" id="scene-close">
+  <div class="close-lines">
+    <div class="close-line" data-i="0">Chiudi gli occhi.</div>
+    <div class="close-line" data-i="1">Immagina il mare.</div>
+    <div class="close-line" data-i="2">I vicoli colorati.</div>
+    <div class="close-line" data-i="3">Il sole.</div>
+    <div class="close-line" data-i="4">E una giornata senza fretta.</div>
+  </div>
+</section>
+
+<!-- SCENE 3 : reveal -->
+<section class="scene" id="scene-reveal">
+  <div id="reveal-wave">🌊</div>
+  <div id="reveal-title" class="display">PROCIDA</div>
+  <div id="reveal-date">2 Agosto 2026</div>
+  <button class="btn-elegant" id="open-tickets-btn">Apri i biglietti</button>
+</section>
+
+<!-- SCENE 4 : boarding passes -->
+<section class="scene" id="scene-tickets">
+  <svg class="corricella-bg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <rect width="800" height="600" fill="url(#corriGrad)"/>
+    <defs>
+      <linearGradient id="corriGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#7fbfc4"/>
+        <stop offset="50%" stop-color="#2c7d8c"/>
+        <stop offset="100%" stop-color="#0a2740"/>
+      </linearGradient>
+    </defs>
+    <g opacity="0.9">
+      <rect x="60" y="260" width="90" height="140" fill="#f0a8a0"/>
+      <rect x="150" y="290" width="70" height="110" fill="#f2c96a"/>
+      <rect x="220" y="250" width="85" height="150" fill="#5f8fb0"/>
+      <rect x="305" y="280" width="75" height="120" fill="#eef6f3"/>
+      <rect x="380" y="240" width="90" height="160" fill="#e88a68"/>
+      <rect x="470" y="275" width="72" height="125" fill="#f2c96a"/>
+      <rect x="542" y="255" width="88" height="145" fill="#f0a8a0"/>
+      <rect x="630" y="285" width="68" height="115" fill="#5f8fb0"/>
+      <rect x="698" y="260" width="90" height="140" fill="#eef6f3"/>
+    </g>
+    <rect x="0" y="400" width="800" height="200" fill="#1a5a68" opacity="0.9"/>
+  </svg>
+  <div class="veil"></div>
+
+  <div class="tickets-head display">I tuoi biglietti d'imbarco</div>
+  <div class="tickets-wrap">
+    <div class="boarding-pass" id="pass-1">
+      <div class="bp-top">
+        <span class="bp-title">Boarding Pass</span>
+        <span class="bp-icon">⛴</span>
+      </div>
+      <div class="bp-field">
+        <span class="bp-label">Passeggero</span>
+        <div class="bp-value">Alessia Pezone</div>
+      </div>
+      <div class="bp-grid">
+        <div class="bp-field">
+          <span class="bp-label">Destinazione</span>
+          <div class="bp-value mono">PROCIDA</div>
+        </div>
+        <div class="bp-field">
+          <span class="bp-label">Data</span>
+          <div class="bp-value mono">02/08/2026</div>
+        </div>
+        <div class="bp-field bp-full">
+          <span class="bp-label">Partenza</span>
+          <div class="bp-value mono">08:30</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="boarding-pass" id="pass-2">
+      <div class="bp-top">
+        <span class="bp-title">Boarding Pass</span>
+        <span class="bp-icon">⛴</span>
+      </div>
+      <div class="bp-field">
+        <span class="bp-label">Passeggero</span>
+        <div class="bp-value">Giuseppe Canciello</div>
+      </div>
+      <div class="bp-grid">
+        <div class="bp-field">
+          <span class="bp-label">Destinazione</span>
+          <div class="bp-value mono">PROCIDA</div>
+        </div>
+        <div class="bp-field">
+          <span class="bp-label">Data</span>
+          <div class="bp-value mono">02/08/2026</div>
+        </div>
+        <div class="bp-field bp-full">
+          <span class="bp-label">Partenza</span>
+          <div class="bp-value mono">08:30</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<audio id="wave-audio" loop preload="none">
+  <source src="assets/onde.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+(function(){
+  const scenes = {
+    black: document.getElementById('scene-black'),
+    procida: document.getElementById('scene-procida'),
+    close: document.getElementById('scene-close'),
+    reveal: document.getElementById('scene-reveal'),
+    tickets: document.getElementById('scene-tickets'),
+  };
+
+  function goTo(name){
+    Object.values(scenes).forEach(s => s.classList.remove('active'));
+    scenes[name].classList.add('active');
+  }
+
+  function wait(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+  async function runIntro(){
+    // Scene 0: black opening
+    const l1 = document.getElementById('title-main');
+    const l2 = document.getElementById('title-sub');
+    const l3 = document.getElementById('title-line');
+
+    await wait(400);
+    l1.classList.add('show');
+    await wait(2000);
+    l2.classList.add('show');
+    await wait(1200);
+    l3.classList.add('show');
+    await wait(3200);
+
+    // fade out scene 0, into Procida scene
+    goTo('procida');
+    const p1 = document.getElementById('procida-line1');
+    const p2 = document.getElementById('procida-line2');
+    const p3 = document.getElementById('procida-line3');
+    await wait(600);
+    p1.classList.add('show');
+    await wait(2200);
+    p2.classList.add('show');
+    await wait(1200);
+    p3.classList.add('show');
+    await wait(3400);
+
+    // Scene: closed eyes
+    goTo('close');
+    const lines = Array.from(document.querySelectorAll('.close-line'));
+    for(const line of lines){
+      line.classList.add('show');
+      await wait(1500);
+    }
+    await wait(1400);
+
+    // Reveal
+    goTo('reveal');
+  }
+
+  document.getElementById('open-tickets-btn').addEventListener('click', () => {
+    goTo('tickets');
+    const p1 = document.getElementById('pass-1');
+    const p2 = document.getElementById('pass-2');
+    setTimeout(() => p1.classList.add('show'), 150);
+    setTimeout(() => p2.classList.add('show'), 550);
+  });
+
+  // sound toggle
+  const audio = document.getElementById('wave-audio');
+  const soundBtn = document.getElementById('sound-toggle');
+  let playing = false;
+  soundBtn.addEventListener('click', () => {
+    if(!playing){
+      audio.play().catch(()=>{});
+      soundBtn.textContent = '🔊';
+      playing = true;
+    } else {
+      audio.pause();
+      soundBtn.textContent = '🔇';
+      playing = false;
+    }
+  });
+
+  runIntro();
+})();
+</script>
+
+</body>
+</html>
